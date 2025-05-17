@@ -270,34 +270,20 @@ function App() {
             Kesibukan<span className="text-red-500">*</span>
           </span>
           <div className="flex flex-wrap justify-center items-center gap-8">
-            <label className="flex items-center text-gray-200"> Bekerja</label>
-            <input
-              type="checkbox"
-              value="bekerja"
-              checked={kesibukan.includes("bekerja")}
-              onChange={handleCheckboxChange}
-              className="mr-2"
-            />
-
-            <label className="flex items-center text-gray-200"> Kuliah</label>
-            <input
-              type="checkbox"
-              value="kuliah"
-              checked={kesibukan.includes("kuliah")}
-              onChange={handleCheckboxChange}
-              className="mr-2"
-            />
-
-            <label className="flex items-center text-gray-200">
-              Belum Keduanya
-            </label>
-            <input
-              type="checkbox"
-              value="belum_keduanya"
-              checked={kesibukan.includes("belum_keduanya")}
-              onChange={handleCheckboxChange}
-              className="mr-2"
-            />
+            {["bekerja", "kuliah", "belum_keduanya"].map((val) => (
+              <label key={val} className="flex items-center text-gray-200">
+                <input
+                  type="checkbox"
+                  value={val}
+                  checked={kesibukan.includes(val)}
+                  onChange={handleCheckboxChange}
+                  className="mr-2"
+                />
+                {val === "belum_keduanya"
+                  ? "Belum Keduanya"
+                  : val.charAt(0).toUpperCase() + val.slice(1)}
+              </label>
+            ))}
           </div>
         </div>
 
@@ -352,7 +338,9 @@ function App() {
             }`}
           >
             {result.success
-              ? `Berhasil! ID: ${result.data.id}`
+              ? `Berhasil! ID: ${
+                  result.data.id
+                }. Kesibukan: ${result.data.kesibukan.join(", ")}`
               : `Error: ${result.msg}`}
           </div>
         )}
