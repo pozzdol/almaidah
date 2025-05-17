@@ -73,7 +73,7 @@ function App() {
     } catch (err) {
       // Jika error "Load failed", anggap sukses
       if (err.message.includes("Load failed")) {
-        setResult({ success: true, msg: "Data berhasil dikirim" });
+        alert("Load failed, assuming success");
       } else {
         setResult({ success: false, msg: err.message });
       }
