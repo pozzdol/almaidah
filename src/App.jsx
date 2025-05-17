@@ -1,23 +1,85 @@
-// import { useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
+import { useState } from "react";
 import "./App.css";
 
+// Ganti dengan URL Web App Anda
+const API_URL = "/api";
+
 function App() {
-  // const [count, setCount] = useState(0);
+  const [nama, setNama] = useState("");
+  const [noWa, setNoWa] = useState("");
+  const [tempatLahir, setTempatLahir] = useState("");
+  const [tanggalLahir, setTanggalLahir] = useState("");
+  const [alamatDomisili, setAlamatDomisili] = useState("");
+  const [tahunMasuk, setTahunMasuk] = useState("");
+  const [tahunKeluar, setTahunKeluar] = useState("");
+  const [status, setStatus] = useState("");
+  const [kesibukan, setKesibukan] = useState([]);
+  const [namaInstansi, setNamaInstansi] = useState("");
+  const [alamatSementara, setAlamatSementara] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+
+  // Handler untuk checkbox kesibukan
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    setKesibukan((prev) =>
+      checked ? [...prev, value] : prev.filter((v) => v !== value)
+    );
+  };
+
+  // Submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+
+    const payload = {
+      nama,
+      no_hp: noWa,
+      tempat_lahir: tempatLahir,
+      tanggal_lahir: tanggalLahir,
+      alamat: alamatDomisili,
+      masuk: tahunMasuk,
+      keluar: tahunKeluar,
+      mondok: status,
+      kesibukan,
+      nama_instansi: namaInstansi,
+      alamat_instansi: alamatSementara,
+    };
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "create", payload }),
+      });
+      const data = await res.json();
+      setResult(data);
+
+      if (data.success) {
+        // Reset form
+        setNama("");
+        setNoWa("");
+        setTempatLahir("");
+        setTanggalLahir("");
+        setAlamatDomisili("");
+        setTahunMasuk("");
+        setTahunKeluar("");
+        setStatus("");
+        setKesibukan([]);
+        setNamaInstansi("");
+        setAlamatSementara("");
+      }
+    } catch (err) {
+      setResult({ success: false, msg: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div
-      className="
-        flex flex-col items-center 
-        bg-neutral-950 max-w-[768px] w-[90%] my-8 md:my-0
-        border-t-[2px] border-b-[2px] md:border-t-0 md:border-b-0
-        mx-auto p-8
-        border-l-[2px] border-r-[2px] border-amber-500/25
-        shadow-[0_0_30px_rgba(245,158,11,0.25)]
-        overflow-auto
-      "
-    >
-      {/* — Logo + Judul — */}
+    <div className="flex flex-col items-center bg-neutral-950 max-w-[768px] w-[90%] my-8 md:my-0 mx-auto p-8 border-t-[2px] border-b-[2px] md:border-t-0 md:border-b-0 border-l-[2px] border-r-[2px] border-amber-500/25 shadow-[0_0_30px_rgba(245,158,11,0.25)] overflow-auto">
+      {/* Logo + Judul */}
       <div className="flex flex-col items-center mb-6">
         <div className="flex items-center gap-4 mb-4">
           <img src="/img/logo.png" alt="ALMAIDAH" className="w-16" />
@@ -30,14 +92,14 @@ function App() {
         <h1 className="text-3xl sm:text-4xl font-bold text-amber-400 mb-2 text-center">
           Form Pendataan Alumni
         </h1>
-        <p className="text-center text-gray-400 max-w-md ">
+        <p className="text-center text-gray-400 max-w-md">
           Data ini akan dipakai untuk menghitung jumlah alumni di suatu daerah
           agar perhitungan menjadi lebih akurat.
         </p>
       </div>
 
-      {/* — Form — */}
-      <form className="w-full space-y-6">
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="w-full space-y-6">
         {/* Baris 1 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Nama */}
@@ -47,15 +109,12 @@ function App() {
             </label>
             <input
               id="nama"
-              name="nama"
               type="text"
+              value={nama}
+              onChange={(e) => setNama(e.target.value)}
               required
               placeholder="Nama lengkap"
-              className="
-                w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2
-                placeholder-gray-500 focus:outline-none
-                focus:border-amber-500 focus:ring-1 focus:ring-amber-500
-              "
+              className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
             />
           </div>
           {/* No. WA */}
@@ -65,15 +124,12 @@ function App() {
             </label>
             <input
               id="no_wa"
-              name="no_wa"
               type="tel"
+              value={noWa}
+              onChange={(e) => setNoWa(e.target.value)}
               required
               placeholder="08xxxxxxxxxx"
-              className="
-                w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2
-                placeholder-gray-500 focus:outline-none
-                focus:border-amber-500 focus:ring-1 focus:ring-amber-500
-              "
+              className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
             />
           </div>
         </div>
@@ -90,8 +146,9 @@ function App() {
             </label>
             <input
               id="tempat_lahir"
-              name="tempat_lahir"
               type="text"
+              value={tempatLahir}
+              onChange={(e) => setTempatLahir(e.target.value)}
               required
               placeholder="Tempat lahir"
               className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
@@ -107,8 +164,9 @@ function App() {
             </label>
             <input
               id="tanggal_lahir"
-              name="tanggal_lahir"
               type="date"
+              value={tanggalLahir}
+              onChange={(e) => setTanggalLahir(e.target.value)}
               required
               className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
             />
@@ -125,7 +183,8 @@ function App() {
           </label>
           <textarea
             id="alamat_domisili"
-            name="alamat_domisili"
+            value={alamatDomisili}
+            onChange={(e) => setAlamatDomisili(e.target.value)}
             rows={3}
             required
             placeholder="Alamat domisili"
@@ -141,8 +200,9 @@ function App() {
             </label>
             <input
               id="tahun_masuk"
-              name="tahun_masuk"
               type="number"
+              value={tahunMasuk}
+              onChange={(e) => setTahunMasuk(e.target.value)}
               min="2010"
               max="2100"
               placeholder="YYYY"
@@ -159,8 +219,9 @@ function App() {
             </label>
             <input
               id="tahun_keluar"
-              name="tahun_keluar"
               type="number"
+              value={tahunKeluar}
+              onChange={(e) => setTahunKeluar(e.target.value)}
               min="2017"
               max="2100"
               placeholder="YYYY"
@@ -176,11 +237,13 @@ function App() {
             Status<span className="text-red-500">*</span>
           </span>
           <div className="flex justify-center items-center gap-8">
-            <label className="flex  items-center text-gray-200">
+            <label className="flex items-center text-gray-200">
               <input
                 type="radio"
                 name="status"
                 value="mondok"
+                checked={status === "mondok"}
+                onChange={(e) => setStatus(e.target.value)}
                 required
                 className="mr-2"
               />
@@ -191,6 +254,8 @@ function App() {
                 type="radio"
                 name="status"
                 value="tidak_mondok"
+                checked={status === "tidak_mondok"}
+                onChange={(e) => setStatus(e.target.value)}
                 required
                 className="mr-2"
               />
@@ -205,33 +270,20 @@ function App() {
             Kesibukan<span className="text-red-500">*</span>
           </span>
           <div className="flex flex-wrap justify-center items-center gap-8">
-            <label className="flex items-center text-gray-200">
-              <input
-                type="checkbox"
-                name="kesibukan[]"
-                value="bekerja"
-                className="mr-2"
-              />
-              Bekerja
-            </label>
-            <label className="flex items-center text-gray-200">
-              <input
-                type="checkbox"
-                name="kesibukan[]"
-                value="kuliah"
-                className="mr-2"
-              />
-              Kuliah
-            </label>
-            <label className="flex items-center text-gray-200">
-              <input
-                type="checkbox"
-                name="kesibukan[]"
-                value="belum_keduanya"
-                className="mr-2"
-              />
-              Belum Keduanya
-            </label>
+            {["bekerja", "kuliah", "belum_keduanya"].map((val) => (
+              <label key={val} className="flex items-center text-gray-200">
+                <input
+                  type="checkbox"
+                  value={val}
+                  checked={kesibukan.includes(val)}
+                  onChange={handleCheckboxChange}
+                  className="mr-2"
+                />
+                {val === "belum_keduanya"
+                  ? "Belum Keduanya"
+                  : val.charAt(0).toUpperCase() + val.slice(1)}
+              </label>
+            ))}
           </div>
         </div>
 
@@ -242,8 +294,9 @@ function App() {
           </label>
           <input
             id="nama_instansi"
-            name="nama_instansi"
             type="text"
+            value={namaInstansi}
+            onChange={(e) => setNamaInstansi(e.target.value)}
             placeholder="Nama instansi"
             className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
           />
@@ -258,8 +311,9 @@ function App() {
           </label>
           <input
             id="alamat_sementara"
-            name="alamat_sementara"
             type="text"
+            value={alamatSementara}
+            onChange={(e) => setAlamatSementara(e.target.value)}
             placeholder="Alamat sementara"
             className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
           />
@@ -268,13 +322,26 @@ function App() {
         {/* Submit */}
         <button
           type="submit"
-          className="
-            w-full bg-amber-500 text-black font-semibold py-3 rounded-md
-            hover:brightness-110 transition
-          "
+          disabled={loading}
+          className="w-full bg-amber-500 text-black font-semibold py-3 rounded-md hover:brightness-110 transition disabled:opacity-50"
         >
-          Simpan Data
+          {loading ? "Menyimpan..." : "Simpan Data"}
         </button>
+
+        {/* Hasil Response */}
+        {result && (
+          <div
+            className={`mt-4 p-3 rounded-md ${
+              result.success
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {result.success
+              ? `Berhasil! ID: ${result.data.id}`
+              : `Error: ${result.msg}`}
+          </div>
+        )}
       </form>
     </div>
   );
