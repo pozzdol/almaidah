@@ -338,9 +338,7 @@ function App() {
             }`}
           >
             {result.success
-              ? `Berhasil! ID: ${
-                  result.data.id
-                }. Kesibukan: ${result.data.kesibukan.join(", ")}`
+              ? `Berhasil! ID: ${result.data.id}.`
               : `Error: ${result.msg}`}
           </div>
         )}
