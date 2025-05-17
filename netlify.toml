@@ -5,7 +5,7 @@
 
 [[redirects]]
   from     = "/api"
-  to       = "https://script.google.com/macros/s/AKfyYOUR_WEBAPP_ID/exec"
+  to       = "https://script.google.com/macros/s/AKfycbxBPexPzbb0m6Kw-ePbQXj7d_Zt8JBnIn_vn0E705yNOLpQNfUtFn_esVMttJc6E4Efjg/exec"
   status   = 200
   force    = true
   methods  = ["GET", "POST", "OPTIONS"]
