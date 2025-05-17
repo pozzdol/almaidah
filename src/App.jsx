@@ -73,7 +73,18 @@ function App() {
     } catch (err) {
       // Jika error "Load failed", anggap sukses
       if (err.message.includes("Load failed")) {
-        alert("Load failed, assuming success");
+        alert("Data berhasil disimpan!");
+        setNama("");
+        setNoWa("");
+        setTempatLahir("");
+        setTanggalLahir("");
+        setAlamatDomisili("");
+        setTahunMasuk("");
+        setTahunKeluar("");
+        setStatus("");
+        setKesibukan([]);
+        setNamaInstansi("");
+        setAlamatSementara("");
       } else {
         setResult({ success: false, msg: err.message });
       }
