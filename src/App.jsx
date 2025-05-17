@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import { Navigate } from "react-router-dom";
 
 // Ganti dengan URL Web App Anda
 const API_URL = "/api";
@@ -69,6 +70,8 @@ function App() {
         setKesibukan([]);
         setNamaInstansi("");
         setAlamatSementara("");
+
+        Navigate("/success", { replace: true });
       }
     } catch (err) {
       // Jika error "Load failed", anggap sukses
@@ -94,7 +97,7 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center bg-neutral-950 max-w-[768px] w-[90%] my-8 md:my-0 mx-auto p-8 border-t-[2px] border-b-[2px] md:border-t-0 md:border-b-0 border-l-[2px] border-r-[2px] border-amber-500/25 shadow-[0_0_30px_rgba(245,158,11,0.25)] overflow-auto">
+    <div className="flex flex-col items-center bg-neutral-950 max-w-[768px] w-[90%] my-8 md:my-0 mx-auto p-8 border-t-[2px] border-b-[2px] md:border-t-0 md:border-b-0 border-l-[2px] border-r-[2px] border-amber-500/50 shadow-[0_0_30px_rgba(245,158,11,0.25)] overflow-auto">
       {/* Logo + Judul */}
       <div className="flex flex-col items-center mb-6">
         <div className="flex items-center gap-4 mb-4">
@@ -105,7 +108,7 @@ function App() {
             className="w-12 h-12"
           />
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-amber-400 mb-2 text-center">
+        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent mb-2 text-center">
           Form Pendataan Alumni
         </h1>
         <p className="text-center text-gray-400 max-w-md">
@@ -339,7 +342,7 @@ function App() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-amber-500 text-black font-semibold py-3 rounded-md hover:brightness-110 transition disabled:opacity-50"
+          className="w-full bg-gradient-to-br from-amber-300 to-amber-500 text-black font-semibold py-3 rounded-md hover:brightness-110 transition disabled:opacity-50"
         >
           {loading ? "Menyimpan..." : "Simpan Data"}
         </button>
