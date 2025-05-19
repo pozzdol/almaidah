@@ -72,7 +72,10 @@ function App() {
         setNamaInstansi("");
         setAlamatSementara("");
 
-        return navigate(`/halo/${encodeURIComponent(nama)}`, { replace: true });
+        return navigate(`/halo/${encodeURIComponent(nama)}`, {
+  replace: true,
+  state: { fromForm: true, nama },
+})
       }
     } catch (err) {
       // Jika error "Load failed", anggap sukses
@@ -89,7 +92,10 @@ function App() {
         setKesibukan([]);
         setNamaInstansi("");
         setAlamatSementara("");
-        return navigate(`/halo/${encodeURIComponent(nama)}`, { replace: true });
+        return navigate(`/halo/${encodeURIComponent(nama)}`, {
+  replace: true,
+  state: { fromForm: true, nama },
+})
       } else {
         setResult({ success: false, msg: err.message });
       }
