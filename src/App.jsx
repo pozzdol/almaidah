@@ -1,11 +1,12 @@
 import { useState } from "react";
 import "./App.css";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Ganti dengan URL Web App Anda
 const API_URL = "/api";
 
 function App() {
+  const navigate = useNavigate();
   const [nama, setNama] = useState("");
   const [noWa, setNoWa] = useState("");
   const [tempatLahir, setTempatLahir] = useState("");
@@ -71,7 +72,7 @@ function App() {
         setNamaInstansi("");
         setAlamatSementara("");
 
-        Navigate("/success", { replace: true });
+        return navigate(`/halo/${encodeURIComponent(nama)}`, { replace: true });
       }
     } catch (err) {
       // Jika error "Load failed", anggap sukses
@@ -88,6 +89,7 @@ function App() {
         setKesibukan([]);
         setNamaInstansi("");
         setAlamatSementara("");
+        return navigate(`/halo/${encodeURIComponent(nama)}`, { replace: true });
       } else {
         setResult({ success: false, msg: err.message });
       }
