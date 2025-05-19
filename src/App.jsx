@@ -73,9 +73,9 @@ function App() {
         setAlamatSementara("");
 
         return navigate(`/halo/${encodeURIComponent(nama)}`, {
-  replace: true,
-  state: { fromForm: true, nama },
-})
+          replace: true,
+          state: { fromForm: true, nama },
+        });
       }
     } catch (err) {
       // Jika error "Load failed", anggap sukses
@@ -93,9 +93,9 @@ function App() {
         setNamaInstansi("");
         setAlamatSementara("");
         return navigate(`/halo/${encodeURIComponent(nama)}`, {
-  replace: true,
-  state: { fromForm: true, nama },
-})
+          replace: true,
+          state: { fromForm: true, nama },
+        });
       } else {
         setResult({ success: false, msg: err.message });
       }
@@ -219,6 +219,39 @@ function App() {
           />
         </div>
 
+        {/* Status */}
+        <div className="flex flex-col">
+          <span className="mb-1 text-sm text-gray-300">
+            Status<span className="text-red-500">*</span>
+          </span>
+          <div className="flex justify-center items-center gap-8">
+            <label className="flex items-center text-gray-200">
+              <input
+                type="radio"
+                name="status"
+                value="mondok"
+                checked={status === "mondok"}
+                onChange={(e) => setStatus(e.target.value)}
+                required
+                className="mr-2"
+              />
+              Mondok
+            </label>
+            <label className="flex items-center text-gray-200">
+              <input
+                type="radio"
+                name="status"
+                value="tidak_mondok"
+                checked={status === "tidak_mondok"}
+                onChange={(e) => setStatus(e.target.value)}
+                required
+                className="mr-2"
+              />
+              Tidak Mondok
+            </label>
+          </div>
+        </div>
+
         {/* Tahun Masuk & Keluar */}
         <div className="grid grid-cols-2 gap-6">
           <div className="flex flex-col">
@@ -255,39 +288,6 @@ function App() {
               required
               className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
             />
-          </div>
-        </div>
-
-        {/* Status */}
-        <div className="flex flex-col">
-          <span className="mb-1 text-sm text-gray-300">
-            Status<span className="text-red-500">*</span>
-          </span>
-          <div className="flex justify-center items-center gap-8">
-            <label className="flex items-center text-gray-200">
-              <input
-                type="radio"
-                name="status"
-                value="mondok"
-                checked={status === "mondok"}
-                onChange={(e) => setStatus(e.target.value)}
-                required
-                className="mr-2"
-              />
-              Mondok
-            </label>
-            <label className="flex items-center text-gray-200">
-              <input
-                type="radio"
-                name="status"
-                value="tidak_mondok"
-                checked={status === "tidak_mondok"}
-                onChange={(e) => setStatus(e.target.value)}
-                required
-                className="mr-2"
-              />
-              Tidak Mondok
-            </label>
           </div>
         </div>
 
