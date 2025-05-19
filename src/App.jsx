@@ -206,7 +206,7 @@ function App() {
             htmlFor="alamat_domisili"
             className="mb-1 text-sm text-gray-300"
           >
-            Alamat Domisili<span className="text-red-500">*</span>
+            Alamat Lengkap<span className="text-red-500">*</span>
           </label>
           <textarea
             id="alamat_domisili"
@@ -214,7 +214,7 @@ function App() {
             onChange={(e) => setAlamatDomisili(e.target.value)}
             rows={3}
             required
-            placeholder="Alamat domisili"
+            placeholder="Alamat sesuai KTP"
             className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
           />
         </div>
@@ -334,14 +334,14 @@ function App() {
             htmlFor="alamat_sementara"
             className="mb-1 text-sm text-gray-300"
           >
-            Alamat Sementara (isi jika tidak sama dengan domisili)
+            Alamat Domisili
           </label>
           <input
             id="alamat_sementara"
             type="text"
             value={alamatSementara}
             onChange={(e) => setAlamatSementara(e.target.value)}
-            placeholder="Alamat sementara"
+            placeholder="Alamat tempat tinggal sekarang (kos, kontrakan, dll)"
             className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
           />
         </div>
