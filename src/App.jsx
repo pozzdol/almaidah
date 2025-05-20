@@ -214,8 +214,11 @@ function App() {
 
   useEffect(() => {
     if (sameAddress) {
-      setAlamatSementara(alamatDomisili); // langsung salin
-    } else if (tempDetail) {
+      setAlamatSementara(alamatDomisili); // copy
+    } else if (
+      tempVillageName &&
+      tempDetail // pastikan lengkap
+    ) {
       setAlamatSementara(`${tempDetail}`);
     }
   }, [
@@ -229,8 +232,10 @@ function App() {
   ]);
 
   useEffect(() => {
-    setAlamatDomisili(alamatSementara);
-  }, [alamatSementara]);
+    if (villageName && detailAddress) {
+      setAlamatDomisili(`${detailAddress}`);
+    }
+  }, [detailAddress, villageName, districtName, cityName, provinceName]);
 
   /* 1️⃣  KOTA SEMENTARA  (depend: tempProvinceId) */
   useEffect(() => {
@@ -365,11 +370,6 @@ function App() {
     const isSame = sameAddress; // true → alamat sementara = domisili
     const fullAddress = isSame ? alamatDomisili : alamatSementara;
 
-    const desaFull = isSame ? villageName : tempVillageName;
-    const kecFull = isSame ? districtName : tempDistrictName;
-    const kotaFull = isSame ? cityName : tempCityName;
-    const provFull = isSame ? provinceName : tempProvinceName;
-
     /* ②  Payload persis seperti yang diminta Apps Script  */
     const payload = {
       /* wajib                                     */
@@ -391,11 +391,11 @@ function App() {
       nama_instansi: namaInstansi,
 
       /* set domisili  (tetap dikirim walau sama) */
-      alamat_domisili: fullAddress,
-      desa_domisili: desaFull,
-      kecamatan_domisili: kecFull,
-      kota_domisili: kotaFull,
-      provinsi_domisili: provFull,
+      alamat_domisili: fullAddress, // ← hasil ① atau ②
+      desa_domisili: isSame ? villageName : tempVillageName,
+      kecamatan_domisili: isSame ? districtName : tempDistrictName,
+      kota_domisili: isSame ? cityName : tempCityName,
+      provinsi_domisili: isSame ? provinceName : tempProvinceName,
     };
 
     try {
