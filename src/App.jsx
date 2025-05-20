@@ -782,7 +782,6 @@ function App() {
                 setTempDistrictId("");
                 setTempVillageName("");
               }}
-              required
               className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
             >
               <option value="" disabled hidden>
@@ -811,7 +810,6 @@ function App() {
                   setTempDistrictId("");
                   setTempVillageName("");
                 }}
-                required
                 className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
               >
                 <option value="" disabled hidden>
@@ -841,7 +839,6 @@ function App() {
                   /* reset hanya anak level ↓ */
                   setTempVillageName("");
                 }}
-                required
                 className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
               >
                 <option value="" disabled hidden>
@@ -871,7 +868,6 @@ function App() {
 
                   /* ⬇ TIDAK ADA level anak, jadi tidak perlu reset apa pun */
                 }}
-                required
                 className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
               >
                 <option value="" disabled hidden>
@@ -897,7 +893,6 @@ function App() {
                 type="text"
                 value={tempDetail}
                 onChange={(e) => setTempDetail(e.target.value)}
-                required
                 placeholder="Detail alamat domisili: No./RT/RW"
                 className="w-full bg-transparent text-gray-200 placeholder-gray-500 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
               />
