@@ -228,6 +228,10 @@ function App() {
     tempVillageName,
   ]);
 
+  useEffect(() => {
+    setAlamatDomisili(alamatSementara);
+  }, [alamatSementara]);
+
   /* 1️⃣  KOTA SEMENTARA  (depend: tempProvinceId) */
   useEffect(() => {
     if (!tempProvinceId) {
@@ -371,11 +375,11 @@ function App() {
       /* wajib                                     */
       no_hp: noWa,
       nama,
-      alamat_lengkap: fullAddress,
-      desa_lengkap: desaFull,
-      kecamatan_lengkap: kecFull,
-      kota_lengkap: kotaFull,
-      provinsi_lengkap: provFull,
+      alamat_lengkap: alamatDomisili,
+      desa_lengkap: villageName,
+      kecamatan_lengkap: districtName,
+      kota_lengkap: cityName,
+      provinsi_lengkap: provinceName,
       tempat_lahir: tempatLahir,
       tanggal_lahir: tanggalLahir,
       kesibukan, // array OK (Apps Script join sendiri)
@@ -387,11 +391,11 @@ function App() {
       nama_instansi: namaInstansi,
 
       /* set domisili  (tetap dikirim walau sama) */
-      alamat_domisili: alamatDomisili,
-      desa_domisili: villageName,
-      kecamatan_domisili: districtName,
-      kota_domisili: cityName,
-      provinsi_domisili: provinceName,
+      alamat_domisili: fullAddress,
+      desa_domisili: desaFull,
+      kecamatan_domisili: kecFull,
+      kota_domisili: kotaFull,
+      provinsi_domisili: provFull,
     };
 
     try {
