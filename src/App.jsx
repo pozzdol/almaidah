@@ -763,7 +763,7 @@ function App() {
             onChange={(e) => setSameAddress(e.target.checked)}
             className="accent-amber-500"
           />
-          Alamat sementara sama dengan alamat domisili
+          Alamat saat ini sama dengan alamat lengkap
         </label>
         {!sameAddress && (
           <div className="flex flex-col border border-gray-600/50 rounded-2xl p-4 gap-4">
