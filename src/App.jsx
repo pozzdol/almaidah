@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Ganti dengan URL Web App Anda
 const API_URL = "/api";
@@ -21,6 +22,294 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
+  /* ────────────────  MASTER DATA WILAYAH  ─────────────── */
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [villages, setVillages] = useState([]);
+
+  /* ────────────────  PILIHAN WILAYAH (NAMA)  ──────────── */
+  const [provinceName, setProvinceName] = useState("");
+  const [cityName, setCityName] = useState("");
+  const [districtName, setDistrictName] = useState("");
+  const [villageName, setVillageName] = useState("");
+  const [detailAddress, setDetailAddress] = useState("");
+
+  /* id disimpan terpisah (hanya untuk fetch) */
+  const [provinceId, setProvinceId] = useState("");
+  const [cityId, setCityId] = useState("");
+  const [districtId, setDistrictId] = useState("");
+  const [tempCities, setTempCities] = useState([]);
+  const [tempDistricts, setTempDistricts] = useState([]);
+  const [tempVillages, setTempVillages] = useState([]);
+
+  /* —— FLAG: alamat sementara sama? (default = true) —— */
+  const [sameAddress, setSameAddress] = useState(true);
+
+  /* —— State alamat-sementara (nama & id, mirip domisili) —— */
+  const [tempProvinceName, setTempProvinceName] = useState("");
+  const [tempProvinceId, setTempProvinceId] = useState("");
+
+  const [tempCityName, setTempCityName] = useState("");
+  const [tempCityId, setTempCityId] = useState("");
+
+  const [tempDistrictName, setTempDistrictName] = useState("");
+  const [tempDistrictId, setTempDistrictId] = useState("");
+
+  const [tempVillageName, setTempVillageName] = useState("");
+  const [tempDetail, setTempDetail] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          "https://pozzdol.github.io/api-wilayah-indonesia/api/provinces.json"
+        );
+        setProvinces(data);
+      } catch (err) {
+        console.error("Gagal mengambil provinsi:", err);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!provinceId) {
+      setCities([]);
+      setCityId("");
+      setCityName("");
+      return;
+    }
+
+    const ctl = new AbortController();
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `https://pozzdol.github.io/api-wilayah-indonesia/api/regencies/${provinceId}.json`,
+          { signal: ctl.signal }
+        );
+        setCities(data);
+      } catch (err) {
+        if (!axios.isCancel(err)) console.error("Gagal mengambil kota:", err);
+      }
+    })();
+
+    return () => ctl.abort();
+  }, [provinceId]);
+
+  useEffect(() => {
+    if (!cityId) {
+      setDistricts([]);
+      setDistrictId("");
+      setDistrictName("");
+      return;
+    }
+
+    const ctl = new AbortController();
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `https://pozzdol.github.io/api-wilayah-indonesia/api/districts/${cityId}.json`,
+          { signal: ctl.signal }
+        );
+        setDistricts(data);
+      } catch (err) {
+        if (!axios.isCancel(err))
+          console.error("Gagal mengambil kecamatan:", err);
+      }
+    })();
+
+    return () => ctl.abort();
+  }, [cityId]);
+
+  useEffect(() => {
+    if (!districtId) {
+      setVillages([]);
+      setVillageName("");
+      return;
+    }
+
+    const ctl = new AbortController();
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `https://pozzdol.github.io/api-wilayah-indonesia/api/villages/${districtId}.json`,
+          { signal: ctl.signal }
+        );
+        setVillages(data);
+      } catch (err) {
+        if (!axios.isCancel(err))
+          console.error("Gagal mengambil kelurahan:", err);
+      }
+    })();
+
+    return () => ctl.abort();
+  }, [districtId]);
+
+  /* ────────────────  HANDLERS WILAYAH  ────────────────── */
+  const handleProvinceChange = (e) => {
+    const name = e.target.value;
+    const id = e.target.selectedOptions[0].dataset.id;
+
+    setProvinceName(name);
+    setProvinceId(id);
+
+    /* reset level di bawah */
+    setCityName("");
+    setCityId("");
+    setDistrictName("");
+    setDistrictId("");
+    setVillageName("");
+  };
+
+  const handleCityChange = (e) => {
+    const name = e.target.value;
+    const id = e.target.selectedOptions[0].dataset.id;
+
+    setCityName(name);
+    setCityId(id);
+
+    setDistrictName("");
+    setDistrictId("");
+    setVillageName("");
+  };
+
+  const handleDistrictChange = (e) => {
+    const name = e.target.value;
+    const id = e.target.selectedOptions[0].dataset.id;
+
+    setDistrictName(name);
+    setDistrictId(id);
+
+    setVillageName("");
+  };
+
+  const handleVillageChange = (e) => {
+    setVillageName(e.target.value);
+    /* detail address selalu diisi manual → tidak perlu id di sini */
+  };
+
+  /* —— copy otomatis jika centang “sama” —— */
+  useEffect(() => {
+    if (sameAddress) {
+      setTempProvinceName(provinceName);
+      setTempProvinceId(provinceId);
+      setTempCityName(cityName);
+      setTempCityId(cityId);
+      setTempDistrictName(districtName);
+      setTempDistrictId(districtId);
+      setTempVillageName(villageName);
+      setTempDetail(detailAddress);
+    }
+  }, [
+    sameAddress,
+    provinceName,
+    provinceId,
+    cityName,
+    cityId,
+    districtName,
+    districtId,
+    villageName,
+    detailAddress,
+  ]);
+
+  useEffect(() => {
+    if (sameAddress) {
+      setAlamatSementara(alamatDomisili); // langsung salin
+    } else if (tempVillageName && tempDetail) {
+      setAlamatSementara(
+        `${tempDetail}, ${tempVillageName}, ${tempDistrictName}, ${tempCityName}, ${tempProvinceName}`
+      );
+    }
+  }, [
+    sameAddress,
+    alamatDomisili,
+    tempDetail,
+    tempProvinceName,
+    tempCityName,
+    tempDistrictName,
+    tempVillageName,
+  ]);
+
+  /* 1️⃣  KOTA SEMENTARA  (depend: tempProvinceId) */
+  useEffect(() => {
+    if (!tempProvinceId) {
+      setTempCities([]);
+      setTempCityId("");
+      setTempCityName("");
+      return;
+    }
+
+    const ctl = new AbortController();
+    (async () => {
+      try {
+        /* kota = regencies/{provinceId}.json */
+        const { data } = await axios.get(
+          `https://pozzdol.github.io/api-wilayah-indonesia/api/regencies/${tempProvinceId}.json`,
+          { signal: ctl.signal }
+        );
+        setTempCities(data);
+      } catch (err) {
+        if (!axios.isCancel(err))
+          console.error("Gagal mengambil kota sementara:", err);
+      }
+    })();
+
+    return () => ctl.abort();
+  }, [tempProvinceId]);
+
+  /* 2️⃣  KECAMATAN SEMENTARA  (depend: tempCityId) */
+  useEffect(() => {
+    if (!tempCityId) {
+      setTempDistricts([]);
+      setTempDistrictId("");
+      setTempDistrictName("");
+      return;
+    }
+
+    const ctl = new AbortController();
+    (async () => {
+      try {
+        /* kecamatan = districts/{cityId}.json */
+        const { data } = await axios.get(
+          `https://pozzdol.github.io/api-wilayah-indonesia/api/districts/${tempCityId}.json`,
+          { signal: ctl.signal }
+        );
+        setTempDistricts(data);
+      } catch (err) {
+        if (!axios.isCancel(err))
+          console.error("Gagal mengambil kecamatan sementara:", err);
+      }
+    })();
+
+    return () => ctl.abort();
+  }, [tempCityId]);
+
+  /* 3️⃣  DESA SEMENTARA  (depend: tempDistrictId) */
+  useEffect(() => {
+    if (!tempDistrictId) {
+      setTempVillages([]);
+      setTempVillageName("");
+      return;
+    }
+
+    const ctl = new AbortController();
+    (async () => {
+      try {
+        /* desa = villages/{districtId}.json */
+        const { data } = await axios.get(
+          `https://pozzdol.github.io/api-wilayah-indonesia/api/villages/${tempDistrictId}.json`,
+          { signal: ctl.signal }
+        );
+        setTempVillages(data);
+      } catch (err) {
+        if (!axios.isCancel(err))
+          console.error("Gagal mengambil desa sementara:", err);
+      }
+    })();
+
+    return () => ctl.abort();
+  }, [tempDistrictId]);
+
   // Handler untuk checkbox kesibukan
   const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
@@ -29,24 +318,82 @@ function App() {
     );
   };
 
+  const resetForm = () => {
+    setNama("");
+    setNoWa("");
+    setTempatLahir("");
+    setTanggalLahir("");
+    setTahunMasuk("");
+    setTahunKeluar("");
+    setStatus("");
+    setKesibukan([]);
+    setNamaInstansi("");
+
+    /* alamat domisili */
+    setProvinceName("");
+    setProvinceId("");
+    setCityName("");
+    setCityId("");
+    setDistrictName("");
+    setDistrictId("");
+    setVillageName("");
+    setDetailAddress("");
+    setAlamatDomisili("");
+
+    /* alamat sementara */
+    setSameAddress(true); // kembali centang “sama”
+    setTempProvinceName("");
+    setTempProvinceId("");
+    setTempCityName("");
+    setTempCityId("");
+    setTempDistrictName("");
+    setTempDistrictId("");
+    setTempVillageName("");
+    setTempDetail("");
+    setAlamatSementara("");
+  };
+
   // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
 
+    /* ①  Tentukan mana “alamat_lengkap” (alamat sekarang)  */
+    const isSame = sameAddress; // true → alamat sementara = domisili
+    const fullAddress = isSame ? alamatDomisili : alamatSementara;
+
+    const desaFull = isSame ? villageName : tempVillageName;
+    const kecFull = isSame ? districtName : tempDistrictName;
+    const kotaFull = isSame ? cityName : tempCityName;
+    const provFull = isSame ? provinceName : tempProvinceName;
+
+    /* ②  Payload persis seperti yang diminta Apps Script  */
     const payload = {
-      nama,
+      /* wajib                                     */
       no_hp: noWa,
+      nama,
+      alamat_lengkap: fullAddress,
+      desa_lengkap: desaFull,
+      kecamatan_lengkap: kecFull,
+      kota_lengkap: kotaFull,
+      provinsi_lengkap: provFull,
       tempat_lahir: tempatLahir,
       tanggal_lahir: tanggalLahir,
-      alamat: alamatDomisili,
+      kesibukan, // array OK (Apps Script join sendiri)
+
+      /* opsional                                 */
       masuk: tahunMasuk,
       keluar: tahunKeluar,
       mondok: status,
-      kesibukan,
       nama_instansi: namaInstansi,
-      alamat_instansi: alamatSementara,
+
+      /* set domisili  (tetap dikirim walau sama) */
+      alamat_domisili: alamatDomisili,
+      desa_domisili: villageName,
+      kecamatan_domisili: districtName,
+      kota_domisili: cityName,
+      provinsi_domisili: provinceName,
     };
 
     try {
@@ -55,44 +402,29 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "create", payload }),
       });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setResult(data);
 
       if (data.success) {
-        // Reset form
-        setNama("");
-        setNoWa("");
-        setTempatLahir("");
-        setTanggalLahir("");
-        setAlamatDomisili("");
-        setTahunMasuk("");
-        setTahunKeluar("");
-        setStatus("");
-        setKesibukan([]);
-        setNamaInstansi("");
-        setAlamatSementara("");
-
-        return navigate(`/halo/${encodeURIComponent(nama)}`, {
+        resetForm();
+        navigate(`/halo/${encodeURIComponent(nama)}`, {
           replace: true,
           state: { fromForm: true, nama },
         });
+      } else {
+        throw new Error(data.msg || "Gagal menyimpan di server");
       }
     } catch (err) {
-      // Jika error "Load failed", anggap sukses
-      if (err.message.includes("Load failed")) {
-        alert("Data berhasil disimpan!");
-        setNama("");
-        setNoWa("");
-        setTempatLahir("");
-        setTanggalLahir("");
-        setAlamatDomisili("");
-        setTahunMasuk("");
-        setTahunKeluar("");
-        setStatus("");
-        setKesibukan([]);
-        setNamaInstansi("");
-        setAlamatSementara("");
-        return navigate(`/halo/${encodeURIComponent(nama)}`, {
+      /* fallback offline / jaringan putus */
+      if (
+        err.message.includes("Failed to fetch") ||
+        err.message.includes("Load failed")
+      ) {
+        alert("Data disimpan secara offline (fallback)");
+        resetForm();
+        navigate(`/halo/${encodeURIComponent(nama)}`, {
           replace: true,
           state: { fromForm: true, nama },
         });
@@ -201,22 +533,115 @@ function App() {
         </div>
 
         {/* Alamat Domisili */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="alamat_domisili"
-            className="mb-1 text-sm text-gray-300"
-          >
-            Alamat Lengkap<span className="text-red-500">*</span>
+        <div className="flex flex-col border border-gray-600/50 rounded-2xl p-4 gap-4">
+          <label htmlFor="alamat_domisili">
+            Alamat Lengkap (sesuai KTP)<span className="text-red-500">*</span>
           </label>
-          <textarea
-            id="alamat_domisili"
-            value={alamatDomisili}
-            onChange={(e) => setAlamatDomisili(e.target.value)}
-            rows={3}
+          {/* === PILIHAN PROVINSI === */}
+          <select
+            id="provinsi"
+            value={provinceName}
+            onChange={handleProvinceChange}
             required
-            placeholder="Alamat sesuai KTP"
-            className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
-          />
+            className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+          >
+            <option value="" disabled hidden>
+              Pilih Provinsi
+            </option>
+            {provinces.map((prov) => (
+              <option
+                key={prov.id}
+                value={prov.name} /* ← nama tersimpan */
+                data-id={prov.id} /* ← id untuk fetch */
+                className="text-gray-900"
+              >
+                {prov.name}
+              </option>
+            ))}
+          </select>
+
+          {/* === PILIHAN KOTA (hanya jika provinsi dipilih) === */}
+          {provinceName && (
+            <select
+              id="kota"
+              value={cityName}
+              onChange={handleCityChange}
+              required
+              className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            >
+              <option value="" disabled hidden>
+                Pilih Kota
+              </option>
+              {cities.map((city) => (
+                <option
+                  key={city.id}
+                  value={city.name}
+                  data-id={city.id}
+                  className="text-gray-900"
+                >
+                  {city.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* === PILIHAN KECAMATAN === */}
+          {cityName && (
+            <select
+              id="kecamatan"
+              value={districtName}
+              onChange={handleDistrictChange}
+              required
+              className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            >
+              <option value="" disabled hidden>
+                Pilih Kecamatan
+              </option>
+              {districts.map((dis) => (
+                <option
+                  key={dis.id}
+                  value={dis.name}
+                  data-id={dis.id}
+                  className="text-gray-900"
+                >
+                  {dis.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* === PILIHAN DESA === */}
+          {districtName && (
+            <select
+              id="desa"
+              value={villageName}
+              onChange={handleVillageChange}
+              required
+              className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            >
+              <option value="" disabled hidden>
+                Pilih Desa
+              </option>
+              {villages.map((vil) => (
+                <option key={vil.id} value={vil.name} className="text-gray-900">
+                  {vil.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* === INPUT DETAIL ALAMAT === */}
+          {villageName && (
+            <input
+              type="text"
+              id="detail"
+              value={detailAddress}
+              onChange={(e) => setDetailAddress(e.target.value)}
+              required
+              placeholder="No. Rumah, RT, RW, Dusun (Contoh: Jl. Melati No. 12 RT 03/RW 05)"
+              className="w-full mt-4 bg-transparent text-gray-200 placeholder-gray-500 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            />
+          )}
         </div>
 
         {/* Status */}
@@ -329,22 +754,154 @@ function App() {
           />
         </div>
 
-        <div className="flex flex-col">
-          <label
-            htmlFor="alamat_sementara"
-            className="mb-1 text-sm text-gray-300"
-          >
-            Alamat Domisili
-          </label>
+        <label className="inline-flex items-center gap-2 text-sm text-gray-300">
           <input
-            id="alamat_sementara"
-            type="text"
-            value={alamatSementara}
-            onChange={(e) => setAlamatSementara(e.target.value)}
-            placeholder="Alamat tempat tinggal sekarang (kos, kontrakan, dll)"
-            className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            type="checkbox"
+            checked={sameAddress}
+            onChange={(e) => setSameAddress(e.target.checked)}
+            className="accent-amber-500"
           />
-        </div>
+          Alamat sementara sama dengan alamat domisili
+        </label>
+        {!sameAddress && (
+          <div className="flex flex-col border border-gray-600/50 rounded-2xl p-4 gap-4">
+            <label htmlFor="tempAlamat">Alamat Domisili</label>
+
+            {/* PROVINSI SEMENTARA */}
+            <select
+              value={tempProvinceName}
+              onChange={(e) => {
+                setTempProvinceName(e.target.value);
+                setTempProvinceId(e.target.selectedOptions[0].dataset.id);
+                /* reset level bawah */
+                setTempCityName("");
+                setTempCityId("");
+                setTempDistrictName("");
+                setTempDistrictId("");
+                setTempVillageName("");
+              }}
+              required
+              className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            >
+              <option value="" disabled hidden>
+                Pilih Provinsi (domisili)
+              </option>
+              {provinces.map((prov) => (
+                <option
+                  key={prov.id}
+                  value={prov.name}
+                  data-id={prov.id}
+                  className="text-gray-900"
+                >
+                  {prov.name}
+                </option>
+              ))}
+            </select>
+
+            {/* KOTA SEMENTARA */}
+            {tempProvinceName && (
+              <select
+                value={tempCityName}
+                onChange={(e) => {
+                  setTempCityName(e.target.value);
+                  setTempCityId(e.target.selectedOptions[0].dataset.id);
+                  setTempDistrictName("");
+                  setTempDistrictId("");
+                  setTempVillageName("");
+                }}
+                required
+                className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+              >
+                <option value="" disabled hidden>
+                  Pilih Kota (domisili)
+                </option>
+                {tempCities.map((city) => (
+                  <option
+                    key={city.id}
+                    value={city.name} /* kirim NAMA */
+                    data-id={city.id} /* simpan id utk fetch selanjutnya */
+                    className="text-gray-900"
+                  >
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* KECAMATAN SEMENTARA */}
+            {tempCityName && (
+              <select
+                value={tempDistrictName}
+                onChange={(e) => {
+                  setTempDistrictName(e.target.value);
+                  setTempDistrictId(e.target.selectedOptions[0].dataset.id);
+
+                  /* reset hanya anak level ↓ */
+                  setTempVillageName("");
+                }}
+                required
+                className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+              >
+                <option value="" disabled hidden>
+                  Pilih Kecamatan (domisili)
+                </option>
+
+                {tempDistricts.map((district) => (
+                  <option
+                    key={district.id}
+                    value={district.name} /* kirim NAMA */
+                    data-id={district.id} /* id utk fetch desa */
+                    className="text-gray-900"
+                  >
+                    {district.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* DESA SEMENTARA */}
+            {tempDistrictName && (
+              <select
+                value={tempVillageName}
+                onChange={(e) => {
+                  /* simpan NAMA desa terpilih */
+                  setTempVillageName(e.target.value);
+
+                  /* ⬇ TIDAK ADA level anak, jadi tidak perlu reset apa pun */
+                }}
+                required
+                className="w-full bg-transparent text-gray-200 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+              >
+                <option value="" disabled hidden>
+                  Pilih Desa (domisili)
+                </option>
+
+                {tempVillages.map((village) => (
+                  <option
+                    key={village.id}
+                    value={village.name} /* kirim NAMA */
+                    data-id={village.id} /* id—jika suatu saat dibutuhkan */
+                    className="text-gray-900"
+                  >
+                    {village.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* DETAIL SEMENTARA */}
+            {tempVillageName && (
+              <input
+                type="text"
+                value={tempDetail}
+                onChange={(e) => setTempDetail(e.target.value)}
+                required
+                placeholder="Detail alamat domisili: No./RT/RW"
+                className="w-full bg-transparent text-gray-200 placeholder-gray-500 border border-gray-600/50 rounded-md px-4 py-2 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+              />
+            )}
+          </div>
+        )}
 
         {/* Submit */}
         <button
