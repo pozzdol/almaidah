@@ -44,7 +44,7 @@ function App() {
   const [tempVillages, setTempVillages] = useState([]);
 
   /* —— FLAG: alamat sementara sama? (default = true) —— */
-  const [sameAddress, setSameAddress] = useState(true);
+  const [sameAddress, setSameAddress] = useState(false);
 
   /* —— State alamat-sementara (nama & id, mirip domisili) —— */
   const [tempProvinceName, setTempProvinceName] = useState("");
@@ -343,7 +343,7 @@ function App() {
     setAlamatDomisili("");
 
     /* alamat sementara */
-    setSameAddress(true); // kembali centang “sama”
+    setSameAddress(false); // kembali centang “sama”
     setTempProvinceName("");
     setTempProvinceId("");
     setTempCityName("");
@@ -709,7 +709,7 @@ function App() {
               type="number"
               value={tahunKeluar}
               onChange={(e) => setTahunKeluar(e.target.value)}
-              min="2017"
+              min="2010"
               max="2100"
               placeholder="YYYY"
               required
