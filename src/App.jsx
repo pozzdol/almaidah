@@ -215,10 +215,8 @@ function App() {
   useEffect(() => {
     if (sameAddress) {
       setAlamatSementara(alamatDomisili); // langsung salin
-    } else if (tempVillageName && tempDetail) {
-      setAlamatSementara(
-        `${tempDetail}, ${tempVillageName}, ${tempDistrictName}, ${tempCityName}, ${tempProvinceName}`
-      );
+    } else if (tempDetail) {
+      setAlamatSementara(`${tempDetail}`);
     }
   }, [
     sameAddress,
