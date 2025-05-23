@@ -649,7 +649,7 @@ function App() {
         {/* Status */}
         <div className="flex flex-col">
           <span className="mb-1 text-sm text-gray-300">
-            Status<span className="text-red-500">*</span>
+            Pernah Mondok?<span className="text-red-500">*</span>
           </span>
           <div className="flex justify-center items-center gap-8">
             <label className="flex items-center text-gray-200">
@@ -662,7 +662,7 @@ function App() {
                 required
                 className="mr-2"
               />
-              Mondok
+              Pernah
             </label>
             <label className="flex items-center text-gray-200">
               <input
@@ -674,7 +674,7 @@ function App() {
                 required
                 className="mr-2"
               />
-              Tidak Mondok
+              Tidak
             </label>
           </div>
         </div>
