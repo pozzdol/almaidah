@@ -746,7 +746,8 @@ function App() {
           <label htmlFor="nama_instansi" className="mb-1 text-sm text-gray-300">
             Nama Instansi (isi jika memiliki kesibukan) <br />
             <small className="text-xs italic text-gray-400">
-              Jika memiliki 2 kesibukan pisahkan dengan comma (,)
+              Jika memiliki 2 kesibukan pisahkan dengan comma (,) exc. Nama
+              instansi kuliah, Nama instansi bekerja
             </small>
           </label>
           <input
