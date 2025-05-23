@@ -751,7 +751,7 @@ function App() {
             type="text"
             value={namaInstansi}
             onChange={(e) => setNamaInstansi(e.target.value)}
-            placeholder="Nama instansi"
+            placeholder="Jika memiliki 2 kesibukan tolong tulis semuanya dipisahkan denga comma (,)"
             className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
           />
         </div>
