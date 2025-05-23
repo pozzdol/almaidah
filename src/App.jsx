@@ -744,14 +744,17 @@ function App() {
         {/* Opsional */}
         <div className="flex flex-col">
           <label htmlFor="nama_instansi" className="mb-1 text-sm text-gray-300">
-            Nama Instansi (isi jika memiliki kesibukan)
+            Nama Instansi (isi jika memiliki kesibukan) <br />
+            <small className="text-xs italic text-gray-400">
+              Jika memiliki 2 kesibukan pisahkan dengan comma (,)
+            </small>
           </label>
           <input
             id="nama_instansi"
             type="text"
             value={namaInstansi}
             onChange={(e) => setNamaInstansi(e.target.value)}
-            placeholder="Jika 2 kesibukan pisahkan dengan comma (,)"
+            placeholder="Nama instansi"
             className="w-full bg-transparent border border-gray-600/50 rounded-md px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
           />
         </div>
