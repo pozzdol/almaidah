@@ -690,7 +690,7 @@ function App() {
               type="number"
               value={tahunMasuk}
               onChange={(e) => setTahunMasuk(e.target.value)}
-              min="2010"
+              min="2000"
               max="2100"
               placeholder="YYYY"
               required
@@ -709,7 +709,7 @@ function App() {
               type="number"
               value={tahunKeluar}
               onChange={(e) => setTahunKeluar(e.target.value)}
-              min="2010"
+              min="2015"
               max="2100"
               placeholder="YYYY"
               required
